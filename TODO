@@ -1,8 +1,0 @@
-* password masking
-* enhance log
-* dump log to file on exit
-* s2c (probably c2s) fail badly if called like s2c()
-
-
-0.3-0: 
-  * refactor so it's repl_server(), ... (get rid of all the whoami's)

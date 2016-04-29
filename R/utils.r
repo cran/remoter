@@ -1,13 +1,17 @@
 test_connection <- function(addr, port, ntries=10, sleeptime=1)
 {
-  ctx <- init.context()
-  socket <- init.socket(ctx, "ZMQ_REQ")
+  ctx <- pbdZMQ::init.context()
+  socket <- pbdZMQ::init.socket(ctx, "ZMQ_REQ")
   addr <- pbdZMQ::address(addr, port)
   
   
   for (i in ntries)
   {
-    test <- tryCatch(connect.socket(socket, addr), error=identity, warning=identity, message=identity)
+    test <- tryCatch(
+      pbdZMQ::connect.socket(socket, addr), 
+      error=identity, warning=identity, message=identity
+    )
+    
     if (inherits(test, "simpleWarning"))
       Sys.sleep(sleeptime)
     else
@@ -96,11 +100,21 @@ assert_nostop <- function(..., env = parent.frame())
   test <- tryCatch(assert_that(env=env, ...), error=identity)
   if (!is.logical(test))
   {
-    if (iam("local") || .pbdenv$debug)
-    cat(gsub(test, pattern="(^<assert|>$)", replacement=""))
+    if (iam("local") || getval(debug))
+    {
+      msg <- gsub(test, pattern="(^<assert|>$|Error: )", replacement="")
+      remoter_client_stop(msg)
+    }
     
     return(FALSE)
   }
   else
     TRUE
+}
+
+
+
+isFALSE <- function(x)
+{
+  identical(FALSE, x)
 }

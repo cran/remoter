@@ -1,16 +1,14 @@
 # remoter
 
-* **Version:** 0.2-0
-* **URL**: https://github.com/wrathematics/remoter
-* **Status:** [![Build Status](https://travis-ci.org/wrathematics/remoter.png)](https://travis-ci.org/wrathematics/remoter)
+* **Version:** 0.3-2
+* **URL**: https://github.com/RBigData/remoter
 * **License:** [![License](http://img.shields.io/badge/license-BSD%202--Clause-orange.svg?style=flat)](http://opensource.org/licenses/BSD-2-Clause)
 * **Author:** Drew Schmidt and Wei-Chen Chen
 
 
-Control a remote R session from your local R session.  Uses 
-[**pbdZMQ**](https://github.com/snoweye/pbdZMQ)
-to handle the communication and networking. The custom REPL is 
-based off of [**pbdCS**](https://github.com/wrathematics/pbdCS).
+Control a remote R session from your local R session.  The packages uses [**pbdZMQ**](https://github.com/snoweye/pbdZMQ) to handle the communication and networking. The custom REPL is based off of [**pbdCS**](https://github.com/wrathematics/pbdCS).
+
+Encryption is supported if the **sodium** package is installed.  Details below.
 
 
 
@@ -40,16 +38,28 @@ You can install the stable version from CRAN using the usual `install.packages()
 install.packages("remoter")
 ```
 
-The development version is maintained on GitHub.  You can install this version using the `devtools` package:
+In order to be able to create and connect to secure servers, you should also install the **sodium** package.  You can install it manually with a call to `install.packages("sodium")` or by installing **remoter** via:
 
 ```r
-devtools::install_github("wrathematics/remoter")
+install.packages("remoter", dependencies=TRUE)
+```
+
+
+#### Development Version
+
+The development version is maintained on GitHub, and can easily be installed by any of the packages that offer installations from GitHub:
+
+```r
+### Pick your preference
+devtools::install_github("RBigData/remoter")
+ghit::install_github("RBigData/remoter")
+remotes::install_github("RBigData/remoter")
 ```
 
 
 
 ## Acknowledgements
 
-Almost the entirety of the source code for this package comes from a modification of the **pbdCS** package, the development for which was supported by the project *Harnessing Scalable Libraries for Statistical Computing on Modern Architectures and Bringing Statistics to Large Scale Computing* funded by the National Science Foundation Division of Mathematical Sciences under Grant No. 1418195.
+Work for the **remoter** package is supported in part by the project *Harnessing Scalable Libraries for Statistical Computing on Modern Architectures and Bringing Statistics to Large Scale Computing* funded by the National Science Foundation Division of Mathematical Sciences under Grant No. 1418195.
 
 Any  opinions,  findings,  and  conclusions  or  recommendations expressed  in  this  material  are those  of  the  authors  and  do  not necessarily  reflect  the  views  of  the  National  Science Foundation.

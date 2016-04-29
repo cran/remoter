@@ -1,32 +1,50 @@
 magicmsg_first_connection <- ".__remoter_first_connection"
 
-.pbdenv <- new.env()
+
+
+init_state <- function(envir = .GlobalEnv)
+{
+  if(!exists(".pbdenv", envir = envir))
+    envir$.pbdenv <- new.env()
+  
+  reset_state()
+  
+  invisible()
+}
+
+
 
 reset_state <- function()
 {
   # options
-  .pbdenv$prompt <- "remoteR"
-  .pbdenv$port <- 55555
-  .pbdenv$remote_addr <- "localhost"
-  .pbdenv$password <- NULL
-  .pbdenv$maxattempts <- 5
-  .pbdenv$checkversion <- TRUE
+  set(prompt, "remoter")
+  set(timer, FALSE)
+  set(port, 55555)
+  set(remote_addr, "localhost")
+  set(password, NULL)
+  set(maxattempts, 5)
+  
+  # logs
+  set(serverlog, TRUE)
+  set(verbose, FALSE)
+  set(showmsg, FALSE)
+  set(logfile, logfile_init())
   
   # internals
-  .pbdenv$serverlog <- TRUE
-  .pbdenv$context <- NULL
-  .pbdenv$socket <- NULL
-  .pbdenv$debug <- FALSE
-  .pbdenv$verbose <- TRUE
-  .pbdenv$client_lasterror <- ""
+  set(debug, FALSE)
+  set(context, NULL)
+  set(socket, NULL)
+  set(client_lasterror, "")
+  set(kill_interactive_server, TRUE)
   
-  .pbdenv$remote_context <- NULL
-  .pbdenv$remote_socket <- NULL
   
   # Crypto
-  .pbdenv$keys$private <- NULL
-  .pbdenv$keys$public <- NULL
+  # .pbdenv$withsodium <- FALSE
+  set(secure, FALSE)
+  # .pbdenv$keys$private <- NULL
+  # .pbdenv$keys$public <- NULL
   .pbdenv$keys$theirs <- NULL
+  
   
   # C/S state
   .pbdenv$status <- list(
@@ -46,32 +64,18 @@ reset_state <- function()
 
 
 
-### Crypto
-generate_keypair <- function()
-{
-  .pbdenv$keys$private <- sodium::keygen()
-  .pbdenv$keys$public <- sodium::pubkey(.pbdenv$keys$private)
-  
-  invisible()
-}
-
-
-
-getkey <- function(type)
-{
-  name <- as.character(substitute(type))
-  stopifnot(name == "private" || name == "public" || name == "theirs")
-  .pbdenv$keys[[name]]
-}
-
-
-
 ### just a pinch of sugar
 set <- function(var, val)
 {
   name <- as.character(substitute(var))
   .pbdenv[[name]] <- val
   invisible()
+}
+
+getval <- function(var)
+{
+  name <- as.character(substitute(var))
+  .pbdenv[[name]]
 }
 
 get.status <- function(var)
@@ -87,15 +91,21 @@ set.status <- function(var, val)
   invisible()
 }
 
+getkey <- function(type)
+{
+  name <- as.character(substitute(type))
+  stopifnot(name == "private" || name == "public" || name == "theirs")
+  .pbdenv$keys[[name]]
+}
+
+setkey <- function(var, val)
+{
+  name <- as.character(substitute(var))
+  .pbdenv$keys[[name]] <- val
+  invisible()
+}
+
 iam <- function(name)
 {
   .pbdenv$whoami == name
-}
-
-logprint <- function(msg)
-{
-  if (.pbdenv$serverlog)
-    cat(paste0("[", Sys.time(), "]: ", msg, "\n"))
-  
-  invisible()
 }

@@ -40,14 +40,48 @@
 #' @export
 s2c <- function(object, newname, env=.GlobalEnv)
 {
-  err <- ".__remoter_s2c_failure"
+  if (missing(object))
+  {
+    if (iam("local"))
+      remoter_client_stop("must pass an object")
+    
+    return(invisible())
+  }
+  
+  test <- tryCatch(is.environment(env), error=identity)
+  if (isFALSE(test) || inherits(test, "error"))
+  {
+    if (iam("local"))
+    {
+      if (isFALSE(test))
+        remoter_client_stop("invalid environment")
+      else
+        remoter_client_stop(gsub(test, pattern="(.*: |\\n)", replacement=""))
+    }
+    
+    return(invisible())
+  }
+  
+  if (!missing(newname))
+  {
+    if (!identical(make.names(newname), newname))
+    {
+      if (iam("local"))
+        remoter_client_stop("invalid 'newname'")
+      
+      return(invisible())
+    }
+  }
+  
+  
   name <- as.character(substitute(object))
+  err <- ".__remoter_s2c_failure"
   
   if (iam("local"))
   {
-    value <- receive()
+    value <- remoter_receive()
     
-    if (value == err)
+    if (identical(value, err))
     {
       cat(paste0("Error: object '", name, "' not found on the server\n"))
       return(invisible(FALSE))
@@ -61,7 +95,7 @@ s2c <- function(object, newname, env=.GlobalEnv)
   else if (iam("remote"))
   {
     val <- get0(name, envir=sys.frame(-1), ifnotfound=err)
-    send(data=val, send.more=TRUE)
+    remoter_send(data=val, send.more=TRUE)
   }
   
   return(invisible(TRUE))

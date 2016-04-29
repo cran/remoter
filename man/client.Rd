@@ -4,7 +4,8 @@
 \alias{client}
 \title{Client Launcher}
 \usage{
-client(addr = "localhost", port = 55555, prompt = "remoteR")
+client(addr = "localhost", port = 55555, prompt = "remoter",
+  timer = FALSE)
 }
 \arguments{
 \item{addr}{The remote host/address/endpoint.}
@@ -14,6 +15,9 @@ the client and server.  The port value for the client and server
 must agree.}
 
 \item{prompt}{The prompt to use to delineate the client from the normal R REPL.}
+
+\item{timer}{Logical; should the "performance prompt", which shows timing
+statistics after every command, be used?}
 }
 \value{
 Returns \code{TRUE} invisibly on successful exit.
@@ -24,7 +28,6 @@ Connect to a remote server (launch the client).
 \details{
 The \code{port} values between the client and server must agree.
 If they do not, this can cause the client to hang.
-
 The client is a specialized REPL that intercepts commands sent
 through the R interpreter.  These commands are then sent from the
 client to and evaluated on the server.
