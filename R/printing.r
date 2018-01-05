@@ -11,6 +11,12 @@ remoter_client_stop <- function(msg)
 
 remoter_repl_printer <- function()
 {
+  ### cast addition first.
+  addition <- get.status(ret_addition)
+  if (!is.null(addition))
+    cat(paste(addition, collapse = "\n"), "\n")
+
+  ### cast return second.
   if (get.status(visible))
     cat(paste(get.status(ret), collapse="\n"), "\n")
   
@@ -32,7 +38,7 @@ remoter_show_errors <- function()
 
 
 
-remoter_show_warnings <- function()
+remoter_show_warnings <- function(force=FALSE)
 {
   warnings <- get.status(warnings)
   nwarnings <- length(warnings)
@@ -44,7 +50,7 @@ remoter_show_warnings <- function()
       cat("Warning message:\n")
       cat(warnings)
     }
-    else if (nwarnings < 11)
+    else if (nwarnings < 11 || force)
     {
       cat("Warning messages:\n")
       for (i in 1:nwarnings)
@@ -60,6 +66,7 @@ remoter_show_warnings <- function()
     cat("\n")
   }
   
+  set.status(visible, FALSE)
   set.status(shouldwarn, FALSE)
   
   invisible()

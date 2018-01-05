@@ -43,3 +43,20 @@ generate_keypair <- function()
   
   invisible()
 }
+
+
+
+pwhash <- function(password)
+{
+  if (!is.null(password))
+    argon2::pw_hash(password)
+  else
+    NULL
+}
+
+
+
+pwcheck <- function(pw)
+{
+  argon2::pw_check(getval(password), pw)
+}

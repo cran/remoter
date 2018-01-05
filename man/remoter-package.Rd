@@ -5,15 +5,19 @@
 \alias{remoter-package}
 \title{remoter}
 \description{
-A package for running R commands on a remote R session.  With 
-remoter, you can use RStudio running on your laptop to execute
-commands on an R session running on, for example, Amazon's EC2.
-}
-\author{
-Drew Schmidt and Wei-Chen Chen
+A set of utilities for client/server computing with R, controlling
+a remote R session (the server) from a local one (the client).  Simply set
+up a server (see package vignette for more details) and connect to it from
+your local R session ('RStudio', terminal, etc).  The client/server
+framework is a custom 'REPL' and runs entirely in your R session without the
+need for installing a custom environment on your system.  Network
+communication is handled by the 'ZeroMQ' library by way of the 'pbdZMQ'
+package.
 }
 \references{
 Project URL: \url{https://github.com/RBigData/remoter}
 }
+\author{
+Drew Schmidt and Wei-Chen Chen
+}
 \keyword{package}
-

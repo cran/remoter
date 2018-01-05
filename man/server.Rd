@@ -5,12 +5,14 @@
 \title{Server Launcher}
 \usage{
 server(port = 55555, password = NULL, maxretry = 5,
-  secure = has.sodium(), log = TRUE, verbose = FALSE, showmsg = FALSE)
+  secure = has.sodium(), log = TRUE, verbose = FALSE, showmsg = FALSE,
+  userpng = TRUE, sync = TRUE)
 }
 \arguments{
 \item{port}{The port (number) that will be used for communication between 
 the client and server.  The port value for the client and server
-must agree.}
+must agree.  If the value is 0, then a random open port will be
+selected.}
 
 \item{password}{A password the client must enter before the user can process
 commands on the server.  If the value is \code{NULL}, then no
@@ -26,7 +28,14 @@ the 'sodium' package is available.}
 
 \item{verbose}{Logical; enables the verbose logger.}
 
-\item{showmsg}{Logical; if TRUE, messages from the client are logged}
+\item{showmsg}{Logical; if TRUE, messages from the client are logged.}
+
+\item{userpng}{Logical; if TRUE, rpng is set as the default device for displaying.}
+
+\item{sync}{Logical; if TRUE, the client will have \code{str()}'d versions of server
+objects recreated in the global environment.  This is useful in IDE's like
+RStudio, but it carries a performance penalty.  For terminal users, this is
+not recommended.}
 }
 \value{
 Returns \code{TRUE} invisibly on successful exit.
@@ -45,4 +54,3 @@ available, then you will not be able to start a secure server.
 If the server is secure, then a client can only connect if
 the client has the 'sodium' package available.
 }
-
